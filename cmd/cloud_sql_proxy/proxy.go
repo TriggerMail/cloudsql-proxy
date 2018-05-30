@@ -114,6 +114,7 @@ func watchInstancesLoop(dir string, dst chan<- proxy.Conn, updates <-chan string
 		}
 	}
 
+	// dst is what callers of WatchInstances are reading, so closing it will invoke graceful shutdown
 	close(dst)
 }
 
