@@ -30,6 +30,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -443,6 +444,15 @@ func main() {
 		defer fuse.Close()
 	} else {
 		updates := make(chan string)
+		go func() {
+			c := make(chan os.Signal, 1)
+			signal.Notify(c, os.Interrupt)
+			signal.Notify(c, os.Kill)
+			_ = <-c // block
+			logging.Infof("Shutting down listener")
+			// this will exit the watcher loop, after which all listeners are killed, then finally the connection channel
+			close(updates)
+		}()
 		if *instanceSrc != "" {
 			go func() {
 				for {

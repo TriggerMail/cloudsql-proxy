@@ -113,6 +113,9 @@ func watchInstancesLoop(dir string, dst chan<- proxy.Conn, updates <-chan string
 			logging.Errorf("Error closing %q: %v", v.Addr(), err)
 		}
 	}
+
+	// dst is what callers of WatchInstances are reading, so closing it will invoke graceful shutdown
+	close(dst)
 }
 
 func remove(path string) {
