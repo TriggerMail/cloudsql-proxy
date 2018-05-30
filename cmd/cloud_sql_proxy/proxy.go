@@ -113,6 +113,8 @@ func watchInstancesLoop(dir string, dst chan<- proxy.Conn, updates <-chan string
 			logging.Errorf("Error closing %q: %v", v.Addr(), err)
 		}
 	}
+
+	close(dst)
 }
 
 func remove(path string) {

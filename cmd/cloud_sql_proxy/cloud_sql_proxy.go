@@ -30,6 +30,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -443,6 +444,13 @@ func main() {
 		defer fuse.Close()
 	} else {
 		updates := make(chan string)
+		go func() {
+			c := make(chan os.Signal, 1)
+			signal.Notify(c, os.Interrupt)
+			_ = <-c // block
+			logging.Infof("Received SIGINT. Shutting down listener")
+			close(updates)
+		}()
 		if *instanceSrc != "" {
 			go func() {
 				for {
