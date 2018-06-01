@@ -449,8 +449,8 @@ func main() {
 			c := make(chan os.Signal, 1)
 			signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 			logging.Infof("Listening for signals")
-			_ = <-c // block
-			logging.Infof("Shutting down listener")
+			sig := <-c // block
+			logging.Infof("Received signal '%v'. Shutting down listener", sig)
 			// this will exit the watcher loop, after which all listeners are killed, then finally the connection channel
 			close(updates)
 		}()
