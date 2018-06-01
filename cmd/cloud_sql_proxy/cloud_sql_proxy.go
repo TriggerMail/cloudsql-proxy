@@ -34,6 +34,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloudsql-proxy/logging"
@@ -446,8 +447,8 @@ func main() {
 		updates := make(chan string)
 		go func() {
 			c := make(chan os.Signal, 1)
-			signal.Notify(c, os.Interrupt)
-			signal.Notify(c, os.Kill)
+			signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+			logging.Infof("Listening for signals")
 			_ = <-c // block
 			logging.Infof("Shutting down listener")
 			// this will exit the watcher loop, after which all listeners are killed, then finally the connection channel

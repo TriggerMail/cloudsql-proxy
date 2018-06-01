@@ -43,7 +43,7 @@ build() {
   echo "   Compile -> $OUT"
   CGO_ENABLED=0 GOOS=$OS GOARCH=$ARCH go build \
     -ldflags "-X 'main.versionString=$VERSION'" -a -installsuffix cgo -o $OUT \
-    github.com/GoogleCloudPlatform/cloudsql-proxy/cmd/cloud_sql_proxy
+    github.com/TriggerMail/cloudsql-proxy/cmd/cloud_sql_proxy
 }
 
 # git_version echos out version information related to the git repo and date.
